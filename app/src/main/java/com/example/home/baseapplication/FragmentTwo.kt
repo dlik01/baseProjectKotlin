@@ -4,37 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.home.baseapplication.base.fragment.BaseDaggerFragment
 import com.example.home.baseapplication.databinding.TwoFragmentBinding
 
-class FragmentTwo : Fragment() {
-    private var _binding: TwoFragmentBinding? = null
-    private val binding get() = _binding
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = TwoFragmentBinding.inflate(inflater, container, false)
-        val view = binding?.root
-        return view
-    }
+class FragmentTwo : BaseDaggerFragment<TwoFragmentBinding>() {
+    private val appViewModel: MainViewModel by viewModels { viewModelFactory }
+    override fun inflateViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): TwoFragmentBinding = TwoFragmentBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initLayout()
+        appViewModel.testUseCase()
     }
 
     private fun initLayout() = with(binding) {
-        this ?: return@with
         textView.text = this@FragmentTwo::class.java.simpleName
         fragment1.setOnClickListener { findNavController().popBackStack() }
         fragment3.setOnClickListener { findNavController().navigate(R.id.action_two_fragment_to_three_fragment) }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
 }
